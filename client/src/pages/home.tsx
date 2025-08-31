@@ -128,7 +128,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/1.png" 
+                      src="/hero-images/1.png" 
                       alt="Tech Tutorial Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -142,7 +142,7 @@ export default function Home() {
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/6.png" 
+                      src="/hero-images/6.png" 
                       alt="Cooking Tips Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -156,7 +156,7 @@ export default function Home() {
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/3.png" 
+                      src="/hero-images/3.png" 
                       alt="Fitness Guide Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -170,7 +170,7 @@ export default function Home() {
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/7.png" 
+                      src="/hero-images/7.png" 
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -184,7 +184,7 @@ export default function Home() {
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/8.png" 
+                      src="/hero-images/8.png" 
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -198,7 +198,7 @@ export default function Home() {
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
                     <img 
-                      src="/src/hero-images/4.png" 
+                      src="/hero-images/4.png" 
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
