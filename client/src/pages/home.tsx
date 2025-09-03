@@ -1,51 +1,21 @@
+// client/src/pages/home.tsx
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Check, Brain, Zap, Palette, Image, Lightbulb } from "lucide-react";
-import StepIndicator from "@/components/step-indicator";
-import ImageUpload from "@/components/image-upload";
-import CustomizationForm from "@/components/customization-form";
-import GenerationProgress from "@/components/generation-progress";
-import ThumbnailResults from "@/components/thumbnail-results";
+import { Play, Check, Brain, Zap, Palette, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { type Customizations } from "@shared/schema";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 export default function Home() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [originalPrompt, setOriginalPrompt] = useState("");
-  const [customizations, setCustomizations] = useState<Customizations>({
-    colorScheme: "professional",
-    textOption: "yes-title",
-    style: "professional",
-    targetEmotion: "",
-  });
-  const [requestId, setRequestId] = useState<string | null>(null);
-
-  const nextStep = () => {
-    setCurrentStep(prev => Math.min(prev + 1, 4));
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
-
-  const resetForm = () => {
-    setCurrentStep(1);
-    setUploadedImage(null);
-    setOriginalPrompt("");
-    setCustomizations({
-      colorScheme: "professional",
-      textOption: "yes-title",
-      style: "professional",
-      targetEmotion: "",
-    });
-    setRequestId(null);
-  };
-
   return (
     <div className="bg-background text-foreground min-h-screen">
-      {/* Header */}
+      {/* Header with Authentication */}
       <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -60,6 +30,17 @@ export default function Home() {
             </div>
             <div className="flex items-center space-x-4">
               <ThemeToggle />
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button variant="ghost">Sign In</Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button>Sign Up</Button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
             </div>
           </div>
         </div>
@@ -81,27 +62,41 @@ export default function Home() {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0">
                 Transform your content with AI-powered thumbnails that drive clicks and boost engagement. Upload your image, customize your style, and get professional results instantly.
               </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  size="lg" 
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-3"
-                  onClick={() => document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth" })}
-                  data-testid="button-get-started"
-                >
-                  Get Started Free
-                  <span className="ml-2">→</span>
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button
+                      size="lg"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-3"
+                      data-testid="button-get-started"
+                    >
+                      Get Started Free
+                      <span className="ml-2">→</span>
+                    </Button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <Button
+                    size="lg"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-3"
+                    onClick={() => window.location.href = '/generator'}
+                    data-testid="button-generate-thumbnail"
+                  >
+                    Generate Thumbnail
+                    <span className="ml-2">→</span>
+                  </Button>
+                </SignedIn>
+                <Button
+                  size="lg"
+                  variant="outline"
                   className="text-lg px-8 py-3"
                   onClick={() => window.open("https://www.linkedin.com/in/sudheshhollav/", "_blank", "noopener,noreferrer")}
                   data-testid="button-view-examples"
                 >
                   Contact Sales
                 </Button>
-                </div>
-              
+              </div>
+
               {/* Stats */}
               <div className="flex flex-wrap gap-8 justify-center lg:justify-start mt-12">
                 <div className="text-center">
@@ -123,12 +118,12 @@ export default function Home() {
             <div className="relative">
               <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-6 text-center">Featured Thumbnails</h3>
-                
+
                 {/* 2x2 Grid */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/1.png" 
+                    <img
+                      src="/hero-images/1.png"
                       alt="Tech Tutorial Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -141,8 +136,8 @@ export default function Home() {
                   </div>
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/6.png" 
+                    <img
+                      src="/hero-images/6.png"
                       alt="Cooking Tips Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -155,8 +150,8 @@ export default function Home() {
                   </div>
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/3.png" 
+                    <img
+                      src="/hero-images/3.png"
                       alt="Fitness Guide Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -169,8 +164,8 @@ export default function Home() {
                   </div>
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/7.png" 
+                    <img
+                      src="/hero-images/7.png"
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -183,8 +178,8 @@ export default function Home() {
                   </div>
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/8.png" 
+                    <img
+                      src="/hero-images/8.png"
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -197,8 +192,8 @@ export default function Home() {
                   </div>
 
                   <div className="group relative overflow-hidden rounded-lg aspect-video hover:scale-105 transition-transform duration-300 cursor-pointer">
-                    <img 
-                      src="/hero-images/4.png" 
+                    <img
+                      src="/hero-images/4.png"
                       alt="Travel Vlog Thumbnail"
                       className="w-full h-full object-cover"
                     />
@@ -209,7 +204,6 @@ export default function Home() {
                     </div>
                     <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">04:05</div>
                   </div>
-
                 </div>
 
                 <div className="text-center">
@@ -221,188 +215,98 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Content */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-8">
-              <div className="relative">
-                {/* Progress Line Background */}
-                <div className="absolute top-6 left-0 right-0 h-0.5 bg-border"></div>
-                {/* Active Progress Line */}
-                <div 
-                  className="absolute top-6 left-0 h-0.5 bg-primary transition-all duration-500 ease-in-out"
-                  style={{ 
-                    width: `${((currentStep - 1) / 3) * 100}%` 
-                  }}
-                ></div>
-                
-                {/* Steps Container */}
-                <div className="relative grid grid-cols-4 gap-4">
-                  {[
-                    { step: 1, title: "Upload & Prompt" },
-                    { step: 2, title: "Customize" },
-                    { step: 3, title: "Generate" },
-                    { step: 4, title: "Download" }
-                  ].map(({ step, title }) => (
-                    <div key={step} className="flex flex-col items-center text-center">
-                      {/* Circle */}
-                      <div 
-                        className={`
-                          relative z-10 w-12 h-12 rounded-full flex items-center justify-center font-semibold mb-3 transition-all duration-300
-                          ${currentStep > step 
-                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" 
-                            : currentStep === step 
-                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 ring-4 ring-primary/20" 
-                            : "bg-muted text-muted-foreground border-2 border-border"
-                          }
-                        `}
-                        data-testid={`step-indicator-${step}`}
-                      >
-                        {currentStep > step ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <span className="text-sm font-bold">{step}</span>
-                        )}
-                      </div>
-                      
-                      {/* Title */}
-                      <span 
-                        className={`
-                          text-sm font-medium max-w-[100px] leading-tight
-                          ${currentStep >= step ? "text-foreground" : "text-muted-foreground"}
-                        `}
-                      >
-                        {title}
-                      </span>
-                    </div>
-                  ))}
+      {/* Demo Section - Replacing Main Content */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Side - Demo Video */}
+          <div className="order-2 lg:order-1">
+            <div className="relative">
+              <div className="aspect-video rounded-2xl overflow-hidden bg-card border border-border shadow-2xl">
+                <iframe
+                  src="https://www.youtube.com/embed/u2f4pvZ0qJs"
+                  title="How Thumbnailed.AI Works"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-accent/10 rounded-full blur-xl"></div>
+            </div>
+          </div>
+
+          {/* Right Side - Content and CTA */}
+          <div className="order-1 lg:order-2">
+            <div className="max-w-lg">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                See How Easy It Is to Create{" "}
+                <span className="text-primary">Professional Thumbnails</span>
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Watch our quick demo to see how our AI transforms your images into click-worthy thumbnails in just a few steps. No design skills required!
+              </p>
+
+              <div className="space-y-6 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-primary font-bold text-sm">1</span>
+                  </div>
+                  <span className="text-foreground">Upload your image and describe your vision</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-primary font-bold text-sm">2</span>
+                  </div>
+                  <span className="text-foreground">Customize style, colors, and emotions</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-primary font-bold text-sm">3</span>
+                  </div>
+                  <span className="text-foreground">Get AI-generated thumbnails in 30 seconds</span>
                 </div>
               </div>
-            </Card>
+
+              <SignedOut>
+                <div className="space-y-4">
+                  <SignUpButton mode="modal">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg py-6"
+                    >
+                      Start Creating Free Thumbnails
+                      <span className="ml-2">→</span>
+                    </Button>
+                  </SignUpButton>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Already have an account?{" "}
+                    <SignInButton mode="modal">
+                      <button className="text-primary hover:underline font-medium">
+                        Sign in here
+                      </button>
+                    </SignInButton>
+                  </p>
+                </div>
+              </SignedOut>
+
+              <SignedIn>
+                <Button 
+                  size="lg" 
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg py-6"
+                  onClick={() => window.location.href = '/generator'}
+                >
+                  Generate Your Thumbnail Now
+                  <span className="ml-2">→</span>
+                </Button>
+              </SignedIn>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Step 1: Upload and Initial Prompt */}
-        {currentStep === 1 && (
-          <Card className="mb-12">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Create Your Thumbnail</h2>
-              <p className="text-muted-foreground mb-8">Upload an image and describe your vision to get started</p>
-              
-              <div className="grid lg:grid-cols-2 gap-8">
-                <ImageUpload 
-                  onFileSelect={setUploadedImage}
-                  uploadedImage={uploadedImage}
-                />
-                
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground">Describe Your Thumbnail</h3>
-                  <div className="space-y-4">
-                    <textarea 
-                      className="w-full h-32 p-4 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                      placeholder="I want to create a YouTube thumbnail for my video about..."
-                      value={originalPrompt}
-                      onChange={(e) => setOriginalPrompt(e.target.value)}
-                      data-testid="textarea-prompt"
-                    />
-                    
-                    <div className="bg-accent rounded-lg p-4">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-primary text-xs"><Lightbulb className="w-8 h-8 text-yellow-600" /></span>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-foreground mb-1">Pro Tip</h4>
-                          <p className="text-sm text-muted-foreground">Be specific about your video topic, target audience, and the emotion you want to convey. This helps our AI create better thumbnails!</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end mt-8">
-                <Button 
-                  onClick={nextStep}
-                  disabled={!uploadedImage || !originalPrompt.trim()}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                  data-testid="button-continue-step1"
-                >
-                  Continue
-                  <span className="ml-2">→</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 2: Customization */}
-        {currentStep === 2 && (
-          <Card className="mb-12">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Customize Your Style</h2>
-              <p className="text-muted-foreground mb-8">Answer a few questions to help us create the perfect thumbnail</p>
-              
-              <CustomizationForm 
-                customizations={customizations}
-                onChange={setCustomizations}
-              />
-
-              <div className="flex justify-between mt-8">
-                <Button 
-                  onClick={prevStep}
-                  variant="secondary"
-                  data-testid="button-back-step2"
-                >
-                  ← Back
-                </Button>
-                <Button 
-                  onClick={nextStep}
-                  disabled={!customizations.targetEmotion.trim()}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                  data-testid="button-continue-step2"
-                >
-                  Review & Generate
-                  <span className="ml-2">→</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 3: Generation */}
-        {currentStep === 3 && (
-          <Card className="mb-12">
-            <CardContent className="p-8">
-              <GenerationProgress 
-                originalPrompt={originalPrompt}
-                customizations={customizations}
-                uploadedImage={uploadedImage!}
-                onComplete={(id) => {
-                  setRequestId(id);
-                  setCurrentStep(4);
-                }}
-                onBack={prevStep}
-              />
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 4: Results */}
-        {currentStep === 4 && requestId && (
-          <Card className="mb-12">
-            <CardContent className="p-8">
-              <ThumbnailResults 
-                requestId={requestId}
-                onCreateAnother={resetForm}
-              />
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Features Section */}
+      {/* Keep existing Features, Pricing, and Footer sections... */}
+      {/* Features Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/20 rounded-2xl border border-border/50">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="relative p-8 lg:p-12">
@@ -474,7 +378,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      </main>
 
       {/* Pricing Section */}
       <section className="bg-accent/30 border-t border-border py-16 lg:py-24">
