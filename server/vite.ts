@@ -73,10 +73,26 @@ export function serveStatic(app: Express) {
   console.log("[serveStatic] Looking for client build at:", distPath);
 
   if (!fs.existsSync(distPath)) {
-    console.error("[serveStatic] ❌ Client build not found!");
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
+    console.error("[serveStatic] ❌ Client build not found! Serving API only.");
+    
+    // Show what's actually in the dist directory for debugging
+    const distDir = path.resolve(process.cwd(), "dist");
+    if (fs.existsSync(distDir)) {
+      console.log("[serveStatic] Contents of dist directory:", fs.readdirSync(distDir));
+    } else {
+      console.log("[serveStatic] No dist directory found at all");
+    }
+    
+    // Don't crash - serve a simple response instead
+    app.use("*", (_req, res) => {
+      res.json({ 
+        status: "API running",
+        message: "Client build not found. Please ensure the build process completed successfully.",
+        timestamp: new Date().toISOString(),
+        expectedPath: distPath
+      });
+    });
+    return;
   }
 
   console.log("[serveStatic] ✅ Found client build, serving static files...");
