@@ -68,7 +68,7 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "../client");
+  const distPath = path.resolve(process.cwd(), "dist/client");
 
   console.log("[serveStatic] Looking for client build at:", distPath);
 
