@@ -49,18 +49,14 @@ export async function setupVite(app: Express, server: Server) {
     const url = req.originalUrl;
 
     try {
-      const clientTemplate = path.resolve(
-        __dirname,
-        "..",
-        "client",
-        "index.html",
-      );
+      const clientTemplate = path.resolve(__dirname, "..", "client", "index.html");
 
-      // always reload the index.html file from disk incase it changes
+      console.log("[setupVite] Serving index.html from:", clientTemplate);
+
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
+        `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
@@ -72,18 +68,24 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "../../client");
+  const distPath = path.resolve(__dirname, "../client");
+
+  console.log("[serveStatic] Looking for client build at:", distPath);
 
   if (!fs.existsSync(distPath)) {
+    console.error("[serveStatic] ❌ Client build not found!");
     throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
+      `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
   }
 
+  console.log("[serveStatic] ✅ Found client build, serving static files...");
+
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    const indexPath = path.resolve(distPath, "index.html");
+    console.log("[serveStatic] Serving index.html from:", indexPath);
+    res.sendFile(indexPath);
   });
 }
